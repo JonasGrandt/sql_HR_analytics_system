@@ -2,10 +2,10 @@
 This project simulates a basic Human Resources (HR) system built using PostgreSQL, showcasing essential SQL skills in database design, data insertion, and analytical querying.
 
 -- Project structure
-sql-hr-performance-analysis/
-├── 01_create_tables.sql # SQL to create tables and relationships
-├── 02_insert_data.sql # Sample data for departments, staff, reviews
-├── 03_analysis_queries.sql # Analytical SQL queries and insights
+  sql-hr-performance-analysis/
+  01_create_tables.sql # SQL to create tables and relationships
+  02_insert_data.sql # Sample data for departments, staff, reviews
+  03_analysis_queries.sql # Analytical SQL queries and insights
 └── README.md # Project overview and usage guide
 
 -- Tables Created
