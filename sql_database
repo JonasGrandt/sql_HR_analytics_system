@@ -1,0 +1,137 @@
+==================================================================================
+01_create_table_queries.sql
+==================================================================================
+
+-- CREATING TABLE: staff
+
+CREATE TABLE staff(
+staff_id SERIAL PRIMARY KEY,
+first_name VARCHAR (50) NOT NULL,
+last_name VARCHAR (50) NOT NULL,
+hire_date DATE,
+salary INTEGER NOT NULL
+);
+
+
+-- CREATING TABLE: dep
+
+CREATE TABLE dep(
+dep_id SERIAL PRIMARY KEY,
+dep_name VARCHAR (50) UNIQUE NOT NULL
+);
+
+-- ALTER TABLE: CREATING NEW COLUMN WITH: FK staff.dep_id to PK dep.dep_id 
+ALTER TABLE staff
+ADD COLUMN dep_id INTEGER REFERENCES dep(dep_id);
+
+
+-- CREATING TABLE: perf_review
+
+CREATE TABLE perf_review(
+perf_id SERIAL NOT NULL UNIQUE,
+staff_id INTEGER REFERENCES staff(staff_id),
+review_date DATE NOT NULL,
+performance_rating INTEGER NOT NULL CHECK(performance_rating BETWEEN 1 and 5),
+manager_comment VARCHAR(200) 
+);
+
+
+==================================================================================
+02_insert_into_queries.sql
+==================================================================================
+
+INSERT INTO TABLE: dep
+
+INSERT INTO dep (dep_name)
+VALUES
+('Human Resources'),
+('Engineering'),
+('Marketing');
+
+
+INSERT INTO TABLE: staff
+
+INSERT INTO staff (first_name, last_name, dep_id, salary, hire_date)
+VALUES
+('Lars', 'Larsen', 1, 30000, '2018-10-21'),
+('Pia', 'Nielsen', 2, 28000, '2016-07-06'),
+('Linda', 'Skipper', 2, 30500, '2016-09-02'),
+('Jens', 'Aavand', 3, 31000, '2017-08-17'),
+('Carl', 'Isager', 2, 29000, '2019-05-26'),
+('Bo', 'Pedersen', 3, 28000, '2019-04-16'),
+('Anna', 'Phil', 2, 30000, '2017-11-11'),
+('Carla', 'Kjaar', 1, 34000, '2015-02-01');
+
+
+INSERT INTO TABLE: perf_review
+
+INSERT INTO perf_review (staff_id, manager_comment, review_date, performance_rating)
+VALUES
+(4, 'The staff member is motivated and skillfull. Great problemsolving and progress so far.', CURRENT_DATE, 5),
+(6, 'The staff member is lacking in motivation. Performance is stable but could be enhanced.', CURRENT_DATE, 3);
+
+
+==================================================================================
+ 03_analysis_queries.sql
+==================================================================================
+
+-- 1. List of all employees with department and hire date
+
+SELECT first_name, last_name, dep_name, hire_date
+FROM staff
+INNER JOIN dep
+ON dep.dep_id = staff.dep_id
+
+
+-- 2. Average salary per department
+
+SELECT ROUND(AVG(salary),2) AS average_salary 
+FROM staff
+GROUP BY dep_id
+
+
+-- 3. Average salary per department
+
+SELECT first_name, last_name, salary, dep_name
+FROM staff
+INNER JOIN dep
+ON staff.dep_id = dep.dep_id
+ORDER BY salary DESC
+limit 5
+
+
+-- 4. Number of staff per department 
+
+SELECT dep_name, COUNT(staff_id) AS nr_of_staff 
+FROM STAFF
+INNER JOIN dep 
+ON staff.dep_id = dep.dep_id
+GROUP BY dep.dep_name
+
+
+-- 5. List all performance review with the employee's full name and review details.
+
+SELECT first_name, last_name, manager_comment, review_date, performance_rating
+FROM perf_review
+INNER JOIN staff
+ON perf_review.staff_id = staff.staff_id
+ORDER BY first_name
+
+
+-- 6. Locating the employee(s) with the highest average performance rating.
+
+SELECT first_name, last_name, ROUND(AVG(performance_rating),2) AS Top_perf
+FROM perf_review
+INNER JOIN staff
+ON perf_review.staff_id = staff.staff_id
+GROUP BY first_name, last_name
+ORDER BY ROUND(AVG(performance_rating),2) DESC
+
+
+-- 7. Showing all employees who have received a performance rating below 3 at least once.
+
+SELECT first_name, last_name, performance_rating
+FROM perf_review
+INNER JOIN staff
+ON perf_review.staff_id = staff.staff_id
+WHERE performance_rating < 3 
