@@ -11,7 +11,8 @@ This project simulates a basic Human Resources (HR) system built using PostgreSQ
 -- Tables Created
 1. dep: Departments 
 2. staff: Employee records 
-3. perf_review: Performance reviews 
+3. perf_review: Performance reviews
+   
 (Each table includes appropriate primary keys, foreign keys, constraints, and real-world field types.)
 
 
